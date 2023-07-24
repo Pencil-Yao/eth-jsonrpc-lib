@@ -34,6 +34,12 @@ pub enum ErrorCode {
     InternalError,
     /// Reserved for implementation-defined server-errors.
     ServerError(i64),
+    ///-32003             查询类错误
+    QueryError,
+    ///-32006             交易认证类错误
+    TxAuthError,
+    ///-32099             请求超时
+    TimeOut,
 }
 
 impl ErrorCode {
@@ -46,6 +52,9 @@ impl ErrorCode {
             ErrorCode::InvalidParams => -32_602,
             ErrorCode::InternalError => -32_603,
             ErrorCode::ServerError(code) => code,
+            ErrorCode::QueryError => -32_003,
+            ErrorCode::TxAuthError => -32_006,
+            ErrorCode::TimeOut => -32_099,
         }
     }
 
@@ -58,6 +67,9 @@ impl ErrorCode {
             ErrorCode::InvalidParams => "Invalid params",
             ErrorCode::InternalError => "Internal error",
             ErrorCode::ServerError(_) => "Server error",
+            ErrorCode::QueryError => "Query error",
+            ErrorCode::TxAuthError => "Tx auth error",
+            ErrorCode::TimeOut => "Time out",
         };
         desc.to_string()
     }
@@ -76,6 +88,9 @@ impl<'a> Deserialize<'a> for ErrorCode {
             Some(-32_602) => Ok(ErrorCode::InvalidParams),
             Some(-32_603) => Ok(ErrorCode::InternalError),
             Some(code) => Ok(ErrorCode::ServerError(code)),
+            Some(-32_003) => Ok(ErrorCode::QueryError),
+            Some(-32_006) => Ok(ErrorCode::TxAuthError),
+            Some(-32_099) => Ok(ErrorCode::TimeOut),
             _ => unreachable!(),
         }
     }
@@ -182,6 +197,18 @@ impl Error {
             message: "Invalid JSON-RPC params length".to_owned(),
             data: None,
         }
+    }
+
+    pub fn query_error() -> Self {
+        Self::new(ErrorCode::QueryError)
+    }
+
+    pub fn tx_auth_error() -> Self {
+        Self::new(ErrorCode::TxAuthError)
+    }
+
+    pub fn time_out() -> Self {
+        Self::new(ErrorCode::TimeOut)
     }
 }
 
