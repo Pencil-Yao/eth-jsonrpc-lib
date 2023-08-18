@@ -87,10 +87,10 @@ impl<'a> Deserialize<'a> for ErrorCode {
             Some(-32_601) => Ok(ErrorCode::MethodNotFound),
             Some(-32_602) => Ok(ErrorCode::InvalidParams),
             Some(-32_603) => Ok(ErrorCode::InternalError),
-            Some(code) => Ok(ErrorCode::ServerError(code)),
             Some(-32_003) => Ok(ErrorCode::QueryError),
             Some(-32_006) => Ok(ErrorCode::TxAuthError),
             Some(-32_099) => Ok(ErrorCode::TimeOut),
+            Some(code) => Ok(ErrorCode::ServerError(code)),
             _ => unreachable!(),
         }
     }

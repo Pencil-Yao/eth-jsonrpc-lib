@@ -12,16 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-mod macros;
-
-mod error;
-pub mod rpc_complete;
-pub mod rpc_request;
-pub mod rpc_response;
-pub mod rpc_types;
-
-pub use crate::error::{Error, ErrorCode};
-pub extern crate eth_jsonrpc_types_internals as internals;
+pub mod complete;
