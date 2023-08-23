@@ -18,7 +18,7 @@ mod rpcrequest;
 mod tests;
 
 pub use self::request::{
-    BlockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
+    eth_blockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
     GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCensoredAddrsParams,
     GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
     GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams, GetTransactionCountParams,

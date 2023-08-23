@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::rpc_request::{BlockNumberParams, GetTransactionReceiptParams, PartialRequest, Request};
+use crate::rpc_request::{
+    eth_blockNumberParams, GetTransactionReceiptParams, PartialRequest, Request,
+};
 use ethereum_types::H256;
 use serde_json;
 use std::convert::Into;
@@ -99,8 +101,8 @@ fn serialize_and_deserialize() {
         "params": [1, 2],
     });
 
-    let params = BlockNumberParams::new();
-    test_ser_and_de!(BlockNumberParams, params, []);
+    let params = eth_blockNumberParams::new();
+    test_ser_and_de!(eth_blockNumberParams, params, []);
 
     let full_req = params.into_request(2);
     test_ser_and_de!(Request, full_req,  {
@@ -158,8 +160,8 @@ fn serialize_and_deserialize() {
 
 #[test]
 fn eth_block_number() {
-    let params = BlockNumberParams::new();
-    test_ser_and_de!(BlockNumberParams, params, []);
+    let params = eth_blockNumberParams::new();
+    test_ser_and_de!(eth_blockNumberParams, params, []);
 
     let full_req = params.into_request(1);
     test_ser_and_de!(Request, full_req,  {

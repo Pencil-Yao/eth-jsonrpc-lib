@@ -219,7 +219,7 @@ pub trait JsonRpcRequest {
 macro_rules! impl_for_each_jsonrpc_requests {
     ($macro:ident) => {
         $macro!(
-            (eth_blockNumber, BlockNumberParams: [], Quantity),
+            (eth_blockNumber, eth_blockNumberParams: [], Quantity),
             (PeerCount, PeerCountParams: [], Quantity),
             (SendRawTransaction, SendRawTransactionParams: [Data], TxResponse),
             (SendTransaction, SendTransactionParams: [Data], TxResponse),

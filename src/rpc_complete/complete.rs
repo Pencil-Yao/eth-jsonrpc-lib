@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::rpc_request::{
-    BlockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
+    eth_blockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
     GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCensoredAddrsParams,
     GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
     GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams, GetTransactionCountParams,
@@ -138,7 +138,7 @@ mod tests {
 
     #[test]
     fn test_block_number_params_complete() {
-        let params = BlockNumberParams::new();
+        let params = eth_blockNumberParams::new();
         let full_req = params.into_request(2);
 
         let req_str = r#"{

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::rpc_request::{
-    BlockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
+    eth_blockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
     GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCodeParams,
     GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
     GetStateProofParams, GetTransactionCountParams, GetTransactionParams,
@@ -48,7 +48,7 @@ macro_rules! test_ser_and_de {
 
 #[test]
 fn serialize_and_deserialize() {
-    test_ser_and_de!(BlockNumberParams, [], ());
+    test_ser_and_de!(eth_blockNumberParams, [], ());
 
     test_ser_and_de!(PeerCountParams, [], ());
 
