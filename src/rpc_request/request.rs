@@ -14,10 +14,11 @@
 #![allow(non_camel_case_types)]
 
 use crate::internals::construct_params;
+use crate::rpc_types::ethereum_types::{Block, BlockHeader, Receipt, RpcTransaction};
 use crate::rpc_types::{
-    Block, BlockNumber, Boolean, CallRequest, CallResult, CensorAddrs, Data, Data20, Data32,
-    Filter, FilterChanges, Id, Integer, LicenseInfo, Log, MetaData, OneItemTupleTrick, PeersInfo,
-    PoolTxNum, Quantity, Receipt, RpcTransaction, SoftwareVersion, TxResponse, Version,
+    BlockNumber, Boolean, CallRequest, CallResult, CensorAddrs, Data, Data20, Data32, Filter,
+    FilterChanges, Id, Integer, LicenseInfo, Log, MetaData, OneItemTupleTrick, PeersInfo,
+    PoolTxNum, Quantity, SoftwareVersion, TxResponse, Version,
 };
 /// JSON-RPC Request.
 use serde_json;
@@ -220,11 +221,12 @@ macro_rules! impl_for_each_jsonrpc_requests {
     ($macro:ident) => {
         $macro!(
             (eth_blockNumber, eth_blockNumberParams: [], Quantity),
+            (eth_chainId, eth_chainIdParams: [], Quantity),
             (PeerCount, PeerCountParams: [], Quantity),
             (SendRawTransaction, SendRawTransactionParams: [Data], TxResponse),
             (SendTransaction, SendTransactionParams: [Data], TxResponse),
-            (GetBlockByHash, GetBlockByHashParams: [Data32, Boolean], Block),
-            (GetBlockByNumber, GetBlockByNumberParams: [BlockNumber, Boolean], Block),
+            (eth_getBlockByHash, eth_getBlockByHashParams: [Data32, Boolean], Block),
+            (eth_getBlockByNumber, eth_getBlockByNumberParams: [BlockNumber, Boolean], Block),
             (GetTransactionReceipt, GetTransactionReceiptParams: [Data32], Receipt),
             (GetLogs, GetLogsParams: [Filter], Logs),
             (GetTransactionCount, GetTransactionCountParams: [Data20, BlockNumber], Quantity),
@@ -239,7 +241,7 @@ macro_rules! impl_for_each_jsonrpc_requests {
             (GetTransactionProof, GetTransactionProofParams: [Data32], Data),
             (GetMetaData, GetMetaDataParams: [BlockNumber], MetaData),
             (GetStateProof, GetStateProofParams: [Data20, Data32, BlockNumber], Data),
-            (GetBlockHeader, GetBlockHeaderParams: [BlockNumber], Data),
+            (GetBlockHeader, GetBlockHeaderParams: [BlockNumber], BlockHeader),
             (GetStorageAt, GetStorageKeyParams: [Data20, Data32, BlockNumber], Data),
             (GetVersion, GetVersionParams: [], SoftwareVersion),
             (EstimateQuota, EstimateQuotaParams: [CallRequest, BlockNumber], Quantity),

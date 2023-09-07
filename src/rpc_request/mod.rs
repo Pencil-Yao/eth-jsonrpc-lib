@@ -18,14 +18,14 @@ mod rpcrequest;
 mod tests;
 
 pub use self::request::{
-    eth_blockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
-    GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCensoredAddrsParams,
-    GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
-    GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams, GetTransactionCountParams,
-    GetTransactionParams, GetTransactionProofParams, GetTransactionReceiptParams, GetVersionParams,
-    LicenseInfoParams, NewBlockFilterParams, NewFilterParams, OpCensoredAddressParams,
-    PeerCountParams, PeersInfoParams, SendRawTransactionParams, SendTransactionParams,
-    UninstallFilterParams,
+    eth_blockNumberParams, eth_chainIdParams, eth_getBlockByHashParams, eth_getBlockByNumberParams,
+    CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams, GetBlockHeaderParams,
+    GetCensoredAddrsParams, GetCodeParams, GetFilterChangesParams, GetFilterLogsParams,
+    GetLogsParams, GetMetaDataParams, GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams,
+    GetTransactionCountParams, GetTransactionParams, GetTransactionProofParams,
+    GetTransactionReceiptParams, GetVersionParams, LicenseInfoParams, NewBlockFilterParams,
+    NewFilterParams, OpCensoredAddressParams, PeerCountParams, PeersInfoParams,
+    SendRawTransactionParams, SendTransactionParams, UninstallFilterParams,
 };
 pub use self::request::{
     Call, JsonRpcRequest, PartialCall, PartialRequest, Request, RequestInfo, ResponseResult,

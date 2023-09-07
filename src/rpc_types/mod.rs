@@ -18,6 +18,7 @@ mod block_number;
 mod call_request;
 mod call_result;
 mod censor_addrs;
+pub mod ethereum_types;
 mod exchange;
 mod filter;
 mod license_info;

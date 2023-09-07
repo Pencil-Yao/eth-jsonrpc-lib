@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use crate::rpc_request::{
-    eth_blockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
-    GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCodeParams,
-    GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
+    eth_blockNumberParams, eth_chainIdParams, eth_getBlockByHashParams, eth_getBlockByNumberParams,
+    CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams, GetBlockHeaderParams,
+    GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
     GetStateProofParams, GetTransactionCountParams, GetTransactionParams,
     GetTransactionProofParams, GetTransactionReceiptParams, GetVersionParams, LicenseInfoParams,
     NewBlockFilterParams, NewFilterParams, PeerCountParams, PeersInfoParams,
@@ -59,7 +59,7 @@ fn serialize_and_deserialize() {
     );
 
     test_ser_and_de!(
-        GetBlockByHashParams,
+        eth_getBlockByHashParams,
         [
             "0x000000000000000000000000000000000000000000000000000000000000000a",
             true
@@ -68,7 +68,7 @@ fn serialize_and_deserialize() {
     );
 
     test_ser_and_de!(
-        GetBlockByNumberParams,
+        eth_getBlockByNumberParams,
         ["0x10", false],
         (BlockNumber::new(16u64.into()), false.into())
     );
