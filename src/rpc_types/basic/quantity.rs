@@ -12,20 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt::Display;
 use std::str::FromStr;
 
-use serde::de::{self, Visitor};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use crate::rpc_types::basic::utils::LowerHex;
 use ethereum_types::U256;
+use serde::de::{self, Visitor};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// A big unsigned integer (wrapper structure around U256).
 #[derive(Debug, PartialEq, Eq, Default, Hash, Clone)]
-pub struct Quantity(U256);
+pub struct Quantity(pub U256);
 
 impl Quantity {
     pub fn new(data: U256) -> Quantity {
         Quantity(data)
+    }
+}
+
+impl Display for Quantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:#x}", self.0)
     }
 }
 

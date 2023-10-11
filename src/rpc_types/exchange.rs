@@ -17,7 +17,7 @@ use crate::rpc_types::BlockNumber;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct CountOrCode {
-    pub address: ::std::vec::Vec<u8>,
+    pub address: Vec<u8>,
     pub block_id: BlockNumber,
 }
 
@@ -38,7 +38,7 @@ impl Default for CountOrCode {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct BlockParamsByHash {
-    pub hash: ::std::vec::Vec<u8>,
+    pub hash: Vec<u8>,
     pub include_txs: bool,
 }
 

@@ -18,8 +18,8 @@ mod fixed_data;
 mod integer;
 mod quantity;
 mod tags;
-mod variadic;
 mod utils;
+mod variadic;
 
 pub use self::arbitrary_data::Data;
 pub use self::boolean::Boolean;

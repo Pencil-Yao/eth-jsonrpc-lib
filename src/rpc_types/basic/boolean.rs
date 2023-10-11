@@ -17,7 +17,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// A unsigned integer (wrapper structure around bool).
 #[derive(Debug, PartialEq, Eq, Default, Hash, Clone)]
-pub struct Boolean(bool);
+pub struct Boolean(pub bool);
 
 impl Boolean {
     pub fn new(data: bool) -> Boolean {

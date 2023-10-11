@@ -40,6 +40,10 @@ pub enum ErrorCode {
     TxAuthError,
     ///-32099             请求超时
     TimeOut,
+    ///-34001             wrap orign to etherum type error
+    WrapTypeError,
+    ///-34002             grpc interface error
+    GrpcError,
 }
 
 impl ErrorCode {
@@ -55,6 +59,8 @@ impl ErrorCode {
             ErrorCode::QueryError => -32_003,
             ErrorCode::TxAuthError => -32_006,
             ErrorCode::TimeOut => -32_099,
+            ErrorCode::WrapTypeError => -34_001,
+            ErrorCode::GrpcError => -34_002,
         }
     }
 
@@ -70,6 +76,8 @@ impl ErrorCode {
             ErrorCode::QueryError => "Query error",
             ErrorCode::TxAuthError => "Tx auth error",
             ErrorCode::TimeOut => "Time out",
+            ErrorCode::WrapTypeError => "Wrap type error",
+            ErrorCode::GrpcError => "Grpc error",
         };
         desc.to_string()
     }
@@ -90,6 +98,8 @@ impl<'a> Deserialize<'a> for ErrorCode {
             Some(-32_003) => Ok(ErrorCode::QueryError),
             Some(-32_006) => Ok(ErrorCode::TxAuthError),
             Some(-32_099) => Ok(ErrorCode::TimeOut),
+            Some(-34_001) => Ok(ErrorCode::WrapTypeError),
+            Some(-34_002) => Ok(ErrorCode::GrpcError),
             Some(code) => Ok(ErrorCode::ServerError(code)),
             _ => unreachable!(),
         }
@@ -209,6 +219,14 @@ impl Error {
 
     pub fn time_out() -> Self {
         Self::new(ErrorCode::TimeOut)
+    }
+
+    pub fn wrap_type_error() -> Self {
+        Self::new(ErrorCode::WrapTypeError)
+    }
+
+    pub fn grpc_error() -> Self {
+        Self::new(ErrorCode::GrpcError)
     }
 }
 

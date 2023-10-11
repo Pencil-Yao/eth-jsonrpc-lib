@@ -19,7 +19,7 @@ use crate::Error;
 
 /// A unsigned integer (wrapper structure around u64).
 #[derive(Debug, PartialEq, Eq, Default, Hash, Clone)]
-pub struct Integer(u64);
+pub struct Integer(pub u64);
 
 impl Integer {
     pub fn new(data: u64) -> Integer {
@@ -41,7 +41,7 @@ impl<'de> Deserialize<'de> for Integer {
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_u64(IntegerVisitor)
+        deserializer.deserialize_str(IntegerVisitor)
     }
 }
 
@@ -54,11 +54,48 @@ impl<'de> Visitor<'de> for IntegerVisitor {
         formatter.write_str("Integer")
     }
 
-    fn visit_u64<E>(self, value: u64) -> Result<Self::Value, E>
+    fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
     where
         E: de::Error,
     {
-        Ok(Integer::new(value))
+        if value.len() > 2 && (&value[0..2] == "0x" || &value[0..2] == "0X") {
+            let data = u64::from_str_radix(&value[2..], 16).map_err(|_| {
+                if value.len() > 12 {
+                    E::custom(format!(
+                        "invalid hexadecimal string: [{}..(omit {})..{}]",
+                        &value[..6],
+                        value.len() - 12,
+                        &value[value.len() - 6..value.len()]
+                    ))
+                } else {
+                    E::custom(format!("invalid hexadecimal string: [{}]", value))
+                }
+            })?;
+            Ok(Integer::new(data))
+        } else if !value.is_empty() {
+            let data = u64::from_str_radix(&value, 10).map_err(|_| {
+                if value.len() > 12 {
+                    E::custom(format!(
+                        "invalid decimal string: [{}..(omit {})..{}]",
+                        &value[..6],
+                        value.len() - 12,
+                        &value[value.len() - 6..value.len()]
+                    ))
+                } else {
+                    E::custom(format!("invalid decimal string: [{}]", value))
+                }
+            })?;
+            Ok(Integer::new(data))
+        } else {
+            Err(E::custom("invalid input: string is empty".to_string()))
+        }
+    }
+
+    fn visit_string<E>(self, value: String) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        self.visit_str(value.as_ref())
     }
 }
 

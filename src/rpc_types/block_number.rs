@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use crate::rpc_types::{BlockTag, Quantity};
+use std::fmt::Display;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq, Eq)]
 #[serde(untagged)]
@@ -44,6 +45,15 @@ impl BlockNumber {
 impl Default for BlockNumber {
     fn default() -> Self {
         BlockNumber::Tag(BlockTag::Latest)
+    }
+}
+
+impl Display for BlockNumber {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            BlockNumber::Tag(tag) => write!(f, "{tag}"),
+            BlockNumber::Height(height) => write!(f, "{height}"),
+        }
     }
 }
 

@@ -14,16 +14,21 @@
 #![allow(non_camel_case_types)]
 
 use crate::internals::construct_params;
-use crate::rpc_types::ethereum_types::{Block, BlockHeader, Receipt, RpcTransaction};
+use crate::rpc_types::ethereum_types::{
+    EthBlock, EthCallRequest, EthFilter, EthLog, EthReceipt, EthRpcTransaction,
+    EthTransactionRequest,
+};
 use crate::rpc_types::{
-    BlockNumber, Boolean, CallRequest, CallResult, CensorAddrs, Data, Data20, Data32, Filter,
-    FilterChanges, Id, Integer, LicenseInfo, Log, MetaData, OneItemTupleTrick, PeersInfo,
-    PoolTxNum, Quantity, SoftwareVersion, TxResponse, Version,
+    Block, BlockNumber, Boolean, CallRequest, CallResult, CensorAddrs, Data, Data20, Data32,
+    Filter, FilterChanges, Id, Integer, LicenseInfo, Log, MetaData, OneItemTupleTrick, PeersInfo,
+    PoolTxNum, Quantity, Receipt, RpcTransaction, SoftwareVersion, TxResponse, Version,
 };
 /// JSON-RPC Request.
 use serde_json;
 
 pub type Logs = Vec<Log>;
+pub type EthLogs = Vec<EthLog>;
+pub type Accounts = Vec<Data20>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RequestInfo {
@@ -220,13 +225,12 @@ pub trait JsonRpcRequest {
 macro_rules! impl_for_each_jsonrpc_requests {
     ($macro:ident) => {
         $macro!(
-            (eth_blockNumber, eth_blockNumberParams: [], Quantity),
-            (eth_chainId, eth_chainIdParams: [], Quantity),
+            (BlockNumber, BlockNumberParams: [], Quantity),
             (PeerCount, PeerCountParams: [], Quantity),
             (SendRawTransaction, SendRawTransactionParams: [Data], TxResponse),
             (SendTransaction, SendTransactionParams: [Data], TxResponse),
-            (eth_getBlockByHash, eth_getBlockByHashParams: [Data32, Boolean], Block),
-            (eth_getBlockByNumber, eth_getBlockByNumberParams: [BlockNumber, Boolean], Block),
+            (GetBlockByHash, GetBlockByHashParams: [Data32, Boolean], Block),
+            (GetBlockByNumber, GetBlockByNumberParams: [BlockNumber, Boolean], Block),
             (GetTransactionReceipt, GetTransactionReceiptParams: [Data32], Receipt),
             (GetLogs, GetLogsParams: [Filter], Logs),
             (GetTransactionCount, GetTransactionCountParams: [Data20, BlockNumber], Quantity),
@@ -241,7 +245,7 @@ macro_rules! impl_for_each_jsonrpc_requests {
             (GetTransactionProof, GetTransactionProofParams: [Data32], Data),
             (GetMetaData, GetMetaDataParams: [BlockNumber], MetaData),
             (GetStateProof, GetStateProofParams: [Data20, Data32, BlockNumber], Data),
-            (GetBlockHeader, GetBlockHeaderParams: [BlockNumber], BlockHeader),
+            (GetBlockHeader, GetBlockHeaderParams: [BlockNumber], Data),
             (GetStorageAt, GetStorageKeyParams: [Data20, Data32, BlockNumber], Data),
             (GetVersion, GetVersionParams: [], SoftwareVersion),
             (EstimateQuota, EstimateQuotaParams: [CallRequest, BlockNumber], Quantity),
@@ -264,6 +268,36 @@ macro_rules! impl_for_each_jsonrpc_requests {
                 Boolean
             ], CallResult),
             (GetCensoredAddrs, GetCensoredAddrsParams: [], CensorAddrs),
+            // ethereum jsonrpc
+            (eth_blockNumber, eth_blockNumberParams: [], Quantity),
+            (eth_chainId, eth_chainIdParams: [], Quantity),
+            (eth_getBlockByHash, eth_getBlockByHashParams: [Data32, Boolean], EthBlock),
+            (eth_getBlockByNumber, eth_getBlockByNumberParams: [BlockNumber, Boolean], EthBlock),
+            (eth_getTransactionByHash, eth_getTransactionByHashParams: [Data32], EthRpcTransaction),
+            (eth_getTransactionByBlockHashAndIndex, eth_getTransactionByBlockHashAndIndexParams: [Data32, Integer], EthRpcTransaction),
+            (eth_getTransactionByBlockNumberAndIndex, eth_getTransactionByBlockNumberAndIndexParams: [BlockNumber, Integer], EthRpcTransaction),
+            (eth_getBlockTransactionCountByHash, eth_getBlockTransactionCountByHashParams: [Data32], Integer),
+            (eth_getBlockTransactionCountByNumber, eth_getBlockTransactionCountByNumberParams: [BlockNumber], Integer),
+            (eth_getTransactionReceipt, eth_getTransactionReceiptParams: [Data32], EthReceipt),
+            (eth_getBalance, eth_getBalanceParams: [Data20, BlockNumber], Quantity),
+            (eth_syncing, eth_syncingParams: [], Boolean),
+            (eth_getStorageAt, eth_getStorageAtParams: [Data20, Quantity, BlockNumber], Data),
+            (eth_getCode, eth_getCodeParams: [Data20, BlockNumber], Data),
+            (eth_getTransactionCount, eth_getTransactionCountParams: [Data20, BlockNumber], Integer),
+            (eth_getLogs, eth_getLogsParams: [EthFilter], EthLogs),
+            (eth_call, eth_callParams: [EthCallRequest, BlockNumber], Data),
+            (eth_estimateGas, eth_estimateGasParams: [
+                EthCallRequest,
+                #[serde(default)]
+                BlockNumber
+            ], Quantity),
+            (eth_gasPrice, eth_gasPriceParams: [], Quantity),
+            (eth_maxPriorityFeePerGas, eth_maxPriorityFeePerGasParams: [], Quantity),
+            (eth_sendTransaction, eth_sendTransactionParams: [EthTransactionRequest], Data32),
+            (eth_sendRawTransaction, eth_sendRawTransactionParams: [Data], Data32),
+            (eth_accounts, eth_accountsParams: [], Accounts),
+            // net jsonrpc
+            (net_version, net_versionParams: [], Integer),
         );
     };
 }

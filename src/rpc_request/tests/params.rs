@@ -14,12 +14,16 @@
 
 use crate::rpc_request::{
     eth_blockNumberParams, eth_chainIdParams, eth_getBlockByHashParams, eth_getBlockByNumberParams,
-    CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams, GetBlockHeaderParams,
-    GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
+    eth_getBlockTransactionCountByHashParams, eth_getBlockTransactionCountByNumberParams,
+    eth_getTransactionByBlockHashAndIndexParams, eth_getTransactionByBlockNumberAndIndexParams,
+    eth_getTransactionByHashParams, eth_getTransactionReceiptParams, BlockNumberParams, CallParams,
+    EstimateQuotaParams, GetAbiParams, GetBalanceParams, GetBlockByHashParams,
+    GetBlockByNumberParams, GetBlockHeaderParams, GetCensoredAddrsParams, GetCodeParams,
+    GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
     GetStateProofParams, GetTransactionCountParams, GetTransactionParams,
     GetTransactionProofParams, GetTransactionReceiptParams, GetVersionParams, LicenseInfoParams,
-    NewBlockFilterParams, NewFilterParams, PeerCountParams, PeersInfoParams,
-    SendRawTransactionParams, UninstallFilterParams,
+    NewBlockFilterParams, NewFilterParams, OpCensoredAddressParams, PeerCountParams,
+    PeersInfoParams, SendRawTransactionParams, UninstallFilterParams,
 };
 use crate::rpc_types::{BlockNumber, Boolean, CallRequest, Filter, VariadicValue};
 use ethereum_types::{H160, H256, U256};

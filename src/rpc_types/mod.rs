@@ -24,6 +24,7 @@ mod filter;
 mod license_info;
 mod log;
 mod meta_data;
+pub mod parity_types;
 mod peers_info;
 mod pool_tx_num;
 mod proof;

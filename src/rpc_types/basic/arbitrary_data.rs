@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::rpc_types::basic::utils::LowerHex;
 use rustc_serialize::hex::FromHex;
 use serde::de::{self, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use crate::rpc_types::basic::utils::LowerHex;
 
 /// Arbitrary length bytes (wrapper structure around vector of bytes).
 #[derive(Debug, PartialEq, Eq, Default, Hash, Clone)]

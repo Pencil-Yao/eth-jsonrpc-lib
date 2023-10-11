@@ -18,14 +18,22 @@ mod rpcrequest;
 mod tests;
 
 pub use self::request::{
-    eth_blockNumberParams, eth_chainIdParams, eth_getBlockByHashParams, eth_getBlockByNumberParams,
-    CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams, GetBlockHeaderParams,
-    GetCensoredAddrsParams, GetCodeParams, GetFilterChangesParams, GetFilterLogsParams,
-    GetLogsParams, GetMetaDataParams, GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams,
-    GetTransactionCountParams, GetTransactionParams, GetTransactionProofParams,
-    GetTransactionReceiptParams, GetVersionParams, LicenseInfoParams, NewBlockFilterParams,
-    NewFilterParams, OpCensoredAddressParams, PeerCountParams, PeersInfoParams,
-    SendRawTransactionParams, SendTransactionParams, UninstallFilterParams,
+    eth_accountsParams, eth_blockNumberParams, eth_callParams, eth_chainIdParams,
+    eth_estimateGasParams, eth_gasPriceParams, eth_getBalanceParams, eth_getBlockByHashParams,
+    eth_getBlockByNumberParams, eth_getBlockTransactionCountByHashParams,
+    eth_getBlockTransactionCountByNumberParams, eth_getCodeParams, eth_getLogsParams,
+    eth_getStorageAtParams, eth_getTransactionByBlockHashAndIndexParams,
+    eth_getTransactionByBlockNumberAndIndexParams, eth_getTransactionByHashParams,
+    eth_getTransactionCountParams, eth_getTransactionReceiptParams, eth_maxPriorityFeePerGasParams,
+    eth_sendRawTransactionParams, eth_sendTransactionParams, eth_syncingParams, net_versionParams,
+    BlockNumberParams, CallParams, EstimateQuotaParams, GetAbiParams, GetBalanceParams,
+    GetBlockByHashParams, GetBlockByNumberParams, GetBlockHeaderParams, GetCensoredAddrsParams,
+    GetCodeParams, GetFilterChangesParams, GetFilterLogsParams, GetLogsParams, GetMetaDataParams,
+    GetPoolTxNumParams, GetStateProofParams, GetStorageKeyParams, GetTransactionCountParams,
+    GetTransactionParams, GetTransactionProofParams, GetTransactionReceiptParams, GetVersionParams,
+    LicenseInfoParams, NewBlockFilterParams, NewFilterParams, OpCensoredAddressParams,
+    PeerCountParams, PeersInfoParams, SendRawTransactionParams, SendTransactionParams,
+    UninstallFilterParams,
 };
 pub use self::request::{
     Call, JsonRpcRequest, PartialCall, PartialRequest, Request, RequestInfo, ResponseResult,

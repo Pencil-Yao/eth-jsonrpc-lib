@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt::Display;
+
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum BlockTag {
     #[serde(rename = "latest")]
@@ -28,6 +30,16 @@ enum_number!(
         Charge = 1,
     }
 );
+
+impl Display for BlockTag {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            BlockTag::Latest => write!(f, "latest"),
+            BlockTag::Earliest => write!(f, "earliest"),
+            BlockTag::Pending => write!(f, "pending"),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests_tags {
