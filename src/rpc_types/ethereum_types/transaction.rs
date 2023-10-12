@@ -18,8 +18,8 @@ use crate::rpc_types::{parity_types, BlockTransaction, Data, Integer, RpcTransac
 use cita_cloud_proto::blockchain::{raw_transaction, RawTransaction, Transaction};
 use cita_tool::{pubkey_to_address, Signature, UnverifiedTransaction};
 use ethereum_types::{Address, H256, U256};
-use parity_crypto::publickey::{public_to_address, recover};
 use protobuf::parse_from_bytes;
+use web3::signing::recover;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -135,14 +135,13 @@ impl From<EthTransactionRequest> for EthRpcTransaction {
 
 impl From<parity_types::UnverifiedTransaction> for EthRpcTransaction {
     fn from(origin: parity_types::UnverifiedTransaction) -> Self {
-        let public = recover(
-            &origin.signature(),
-            &parity_crypto::publickey::Message::from_slice(
-                origin.unsigned.signature_hash(origin.chain_id).as_bytes(),
-            ),
+        let (sig, rec_id) = origin.as_signature();
+        let from = recover(
+            origin.unsigned.signature_hash(origin.chain_id).as_bytes(),
+            &sig,
+            rec_id,
         )
         .unwrap();
-        let from = public_to_address(&public);
         let origin_tx = origin.tx();
         let mut tx = EthRpcTransaction::default();
         tx.from = Address::from_slice(from.as_bytes());

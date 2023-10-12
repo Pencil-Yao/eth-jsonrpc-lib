@@ -18,10 +18,10 @@
 
 use ethereum_types::{Address, BigEndianHash, H160, H256, U256};
 use keccak_hash::keccak;
-use parity_crypto::publickey::Signature;
 use parity_util_mem::MallocSizeOf;
 use rlp::{self, DecoderError, Rlp, RlpStream};
 use std::{cmp::min, ops::Deref};
+use web3::signing::Signature;
 
 pub type AccessListItem = (H160, Vec<H256>);
 pub type AccessList = Vec<AccessListItem>;
@@ -525,9 +525,9 @@ impl TypedTransaction {
             unsigned: self,
             chain_id,
             signature: SignatureComponents {
-                r: sig.r().into(),
-                s: sig.s().into(),
-                standard_v: sig.v().into(),
+                r: U256::from_big_endian(sig.r.as_bytes()),
+                s: U256::from_big_endian(sig.s.as_bytes()),
+                standard_v: sig.v as u8,
             },
             hash: H256::zero(),
         }
@@ -820,10 +820,24 @@ impl UnverifiedTransaction {
     pub fn signature(&self) -> Signature {
         let r: H256 = BigEndianHash::from_uint(&self.signature.r);
         let s: H256 = BigEndianHash::from_uint(&self.signature.s);
-        let mut sig = [0u8; 65];
-        sig[0..32].copy_from_slice(r.as_ref());
-        sig[32..64].copy_from_slice(s.as_ref());
-        sig[64] = self.standard_v() + 27;
-        Signature::from_electrum(&sig)
+        Signature {
+            r,
+            s,
+            v: self.standard_v() as u64,
+        }
+    }
+
+    pub fn as_signature(&self) -> ([u8; 64], i32) {
+        let recovery_id = self.standard_v();
+        let r: H256 = BigEndianHash::from_uint(&self.signature.r);
+        let s: H256 = BigEndianHash::from_uint(&self.signature.s);
+        let signature = {
+            let mut sig = [0u8; 64];
+            sig[..32].copy_from_slice(r.as_bytes());
+            sig[32..].copy_from_slice(s.as_bytes());
+            sig
+        };
+
+        (signature, recovery_id as i32)
     }
 }
