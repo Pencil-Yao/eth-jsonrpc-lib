@@ -283,7 +283,7 @@ macro_rules! impl_for_each_jsonrpc_requests {
             (eth_syncing, eth_syncingParams: [], Boolean),
             (eth_getStorageAt, eth_getStorageAtParams: [Data20, Quantity, BlockNumber], Data),
             (eth_getCode, eth_getCodeParams: [Data20, BlockNumber], Data),
-            (eth_getTransactionCount, eth_getTransactionCountParams: [Data20, BlockNumber], Integer),
+            (eth_getTransactionCount, eth_getTransactionCountParams: [Data20, BlockNumber], Quantity),
             (eth_getLogs, eth_getLogsParams: [EthFilter], EthLogs),
             (eth_call, eth_callParams: [EthCallRequest, BlockNumber], Data),
             (eth_estimateGas, eth_estimateGasParams: [
