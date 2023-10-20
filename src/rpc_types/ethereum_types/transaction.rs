@@ -14,14 +14,14 @@
 
 use crate::rpc_types::ethereum_types::EthTransactionRequest;
 use crate::rpc_types::parity_types::Action;
-use crate::rpc_types::{parity_types, BlockTransaction, Data, Integer, RpcTransaction};
+use crate::rpc_types::{parity_types, BlockTransaction, Data, Quantity, RpcTransaction};
 use cita_cloud_proto::blockchain::{raw_transaction, RawTransaction, Transaction};
 use cita_tool::{pubkey_to_address, Signature, UnverifiedTransaction};
-use ethereum_types::{Address, H256, U256};
+use ethereum_types::{Address, H256, U256, U64};
 use protobuf::parse_from_bytes;
 use web3::signing::recover;
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct AccessList {
     pub address: Address,
@@ -34,7 +34,7 @@ pub struct EthRpcTransaction {
     pub block_hash: H256,
     pub block_number: U256,
     pub from: Address,
-    pub gas: u64,
+    pub gas: U256,
     pub gas_price: U256,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_fee_per_gas: Option<U256>,
@@ -42,19 +42,21 @@ pub struct EthRpcTransaction {
     pub max_priority_fee_per_gas: Option<U256>,
     pub hash: H256,
     pub input: Data,
-    pub nonce: u64,
+    pub nonce: U256,
     pub to: Option<Address>,
-    pub transaction_index: u64,
+    pub transaction_index: U64,
     pub value: U256,
     #[serde(rename = "type")]
-    pub type_: u64,
+    pub type_: U64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_list: Option<Vec<AccessList>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chain_id: Option<U256>,
-    pub v: U256,
+    pub v: U64,
     pub r: U256,
     pub s: U256,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub raw: Option<Data>,
 }
 
 impl From<UnverifiedTransaction> for EthRpcTransaction {
@@ -64,12 +66,12 @@ impl From<UnverifiedTransaction> for EthRpcTransaction {
         let sig = Signature::from(&origin.signature);
         let (v, r, s) = match sig {
             Signature::Secp256k1(sig) => (
-                U256::from(sig.v()),
+                U64::from(sig.v()),
                 U256::from_big_endian(&sig.r()),
                 U256::from_big_endian(&sig.s()),
             ),
             Signature::Sm2(sig) => (
-                U256::from(2), // no use recovery id, input a wrong number
+                U64::from(2), // no use recovery id, input a wrong number
                 U256::from_big_endian(&sig.r()),
                 U256::from_big_endian(&sig.s()),
             ),
@@ -84,22 +86,23 @@ impl From<UnverifiedTransaction> for EthRpcTransaction {
             block_hash: Default::default(),
             block_number: Default::default(),
             from: pubkey_to_address(&pubkey),
-            gas: raw_tx.quota,
+            gas: U256::from(raw_tx.quota),
             gas_price: U256::zero(),
             max_fee_per_gas: None,
             max_priority_fee_per_gas: None,
             hash: Default::default(),
             input: Data::new(raw_tx.data),
-            nonce: 0,
+            nonce: Default::default(),
             to,
-            transaction_index: 0,
+            transaction_index: Default::default(),
             value: U256::from_big_endian(&raw_tx.value),
-            type_: 0,
+            type_: Default::default(),
             access_list: None,
             chain_id: Some(U256::from_big_endian(&raw_tx.chain_id_v1)),
             v,
             r,
             s,
+            raw: None,
         }
     }
 }
@@ -127,7 +130,7 @@ impl From<EthTransactionRequest> for EthRpcTransaction {
         };
         tx.input = origin.input.unwrap_or(origin.data.unwrap_or_default());
         tx.value = origin.value.unwrap_or_default().0;
-        tx.gas = origin.gas.unwrap_or(Integer::new(1000000)).0;
+        tx.gas = origin.gas.unwrap_or(Quantity::new(U256::from(1000000))).0;
         tx.gas_price = U256::from(origin.gas_price.unwrap_or_default().0);
         tx
     }
@@ -151,7 +154,7 @@ impl From<parity_types::UnverifiedTransaction> for EthRpcTransaction {
         };
         tx.input = Data::new(origin_tx.data.clone());
         tx.value = origin_tx.value;
-        tx.gas = origin_tx.gas.low_u64();
+        tx.gas = origin_tx.gas;
         tx.gas_price = origin_tx.gas_price;
         tx
     }
@@ -171,7 +174,7 @@ impl Into<Transaction> for EthRpcTransaction {
             version: 0,
             to,
             nonce: rand::random::<u64>().to_string(),
-            quota: self.gas,
+            quota: self.gas.low_u64(),
             valid_until_block: 0,
             data,
             value,
@@ -211,12 +214,12 @@ impl From<RawTransaction> for EthBlockTransaction {
                 let sig = Signature::from(&witness.signature);
                 let (v, r, s) = match sig {
                     Signature::Secp256k1(sig) => (
-                        U256::from(sig.v()),
+                        U64::from(sig.v()),
                         U256::from_big_endian(&sig.r()),
                         U256::from_big_endian(&sig.s()),
                     ),
                     Signature::Sm2(sig) => (
-                        U256::from(2), // no use recovery id, input a wrong number
+                        U64::from(2), // no use recovery id, input a wrong number
                         U256::from_big_endian(&sig.r()),
                         U256::from_big_endian(&sig.s()),
                     ),
@@ -231,22 +234,23 @@ impl From<RawTransaction> for EthBlockTransaction {
                     block_hash: Default::default(),
                     block_number: Default::default(),
                     from: Address::from_slice(&witness.sender),
-                    gas: orin_tx.quota,
+                    gas: U256::from(orin_tx.quota),
                     gas_price: U256::zero(),
                     max_fee_per_gas: None,
                     max_priority_fee_per_gas: None,
                     hash: H256::from_slice(tx.transaction_hash.as_slice()),
                     input: Data::new(orin_tx.data),
-                    nonce: 0,
+                    nonce: Default::default(),
                     to,
-                    transaction_index: 0,
+                    transaction_index: Default::default(),
                     value: U256::from_big_endian(&orin_tx.value),
-                    type_: 0,
+                    type_: Default::default(),
                     access_list: None,
                     chain_id: Some(U256::from_big_endian(&orin_tx.chain_id)),
                     v, // no use recovery id, input a wrong number
                     r,
                     s,
+                    raw: None,
                 })
             }
             raw_transaction::Tx::UtxoTx(utxo) => {
@@ -255,12 +259,12 @@ impl From<RawTransaction> for EthBlockTransaction {
                 let sig = Signature::from(&witness.signature);
                 let (v, r, s) = match sig {
                     Signature::Secp256k1(sig) => (
-                        U256::from(sig.v()),
+                        U64::from(sig.v()),
                         U256::from_big_endian(&sig.r()),
                         U256::from_big_endian(&sig.s()),
                     ),
                     Signature::Sm2(sig) => (
-                        U256::from(2), // no use recovery id, input a wrong number
+                        U64::from(2), // no use recovery id, input a wrong number
                         U256::from_big_endian(&sig.r()),
                         U256::from_big_endian(&sig.s()),
                     ),
@@ -276,16 +280,17 @@ impl From<RawTransaction> for EthBlockTransaction {
                     max_priority_fee_per_gas: None,
                     hash: H256::from_slice(utxo.transaction_hash.as_slice()),
                     input: Data::new(utxo_tx.output),
-                    nonce: 0,
+                    nonce: Default::default(),
                     to: Default::default(),
-                    transaction_index: 0,
+                    transaction_index: Default::default(),
                     value: Default::default(),
-                    type_: 0,
+                    type_: Default::default(),
                     access_list: None,
                     chain_id: Default::default(),
                     v, // no use recovery id, input a wrong number
                     r,
                     s,
+                    raw: None,
                 })
             }
         }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::rpc_types::{ethereum_types::EthBlockTransaction, Block, BlockHeader, Data};
-use ethereum_types::{Address, Bloom, H256, U256};
+use ethereum_types::{Address, Bloom, H256, H64, U256};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -27,12 +27,12 @@ pub struct EthBlockHeader {
     pub logs_bloom: Bloom,
     pub difficulty: U256,
     pub number: U256,
-    pub gas_limit: u64,
-    pub gas_used: u64,
-    pub timestamp: u64,
+    pub gas_limit: U256,
+    pub gas_used: U256,
+    pub timestamp: U256,
     pub extra_data: Data,
     pub mix_hash: H256,
-    pub nonce: u64,
+    pub nonce: H64,
     pub base_fee_per_gas: U256,
     pub hash: H256,
     pub total_difficulty: U256,
@@ -50,12 +50,12 @@ impl From<BlockHeader> for EthBlockHeader {
             logs_bloom: Default::default(),
             difficulty: Default::default(),
             number: origin.number,
-            gas_limit: 0,
-            gas_used: origin.quota_used.low_u64(),
-            timestamp: origin.timestamp / 1000,
+            gas_limit: Default::default(),
+            gas_used: origin.quota_used,
+            timestamp: U256::from(origin.timestamp / 1000),
             extra_data: Data::new(serde_json::to_vec(&origin.proof).unwrap()),
             mix_hash: Default::default(),
-            nonce: 0,
+            nonce: Default::default(),
             base_fee_per_gas: Default::default(),
             hash: Default::default(),
             total_difficulty: Default::default(),
@@ -78,12 +78,12 @@ impl From<cita_cloud_proto::blockchain::BlockHeader> for EthBlockHeader {
             logs_bloom: Default::default(),
             difficulty: Default::default(),
             number: U256::from(origin.height),
-            gas_limit: 0,
+            gas_limit: Default::default(),
             gas_used: Default::default(),
-            timestamp: origin.timestamp / 1000,
+            timestamp: U256::from(origin.timestamp / 1000),
             extra_data: Default::default(),
             mix_hash: Default::default(),
-            nonce: 0,
+            nonce: Default::default(),
             base_fee_per_gas: Default::default(),
             hash: Default::default(),
             total_difficulty: Default::default(),
@@ -95,7 +95,7 @@ impl From<cita_cloud_proto::blockchain::BlockHeader> for EthBlockHeader {
 pub struct EthBlock {
     #[serde(flatten)]
     pub header: EthBlockHeader,
-    pub size: u64,
+    pub size: U256,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub transactions: Vec<EthBlockTransaction>,
     pub uncles: Vec<H256>,
@@ -105,7 +105,7 @@ impl From<Block> for EthBlock {
     fn from(origin: Block) -> Self {
         Self {
             header: origin.header.into(),
-            size: 0,
+            size: Default::default(),
             transactions: origin
                 .body
                 .transactions
@@ -121,7 +121,7 @@ impl From<cita_cloud_proto::blockchain::Block> for EthBlock {
     fn from(origin: cita_cloud_proto::blockchain::Block) -> Self {
         Self {
             header: origin.header.unwrap().into(),
-            size: 0,
+            size: Default::default(),
             transactions: origin
                 .body
                 .unwrap()
@@ -138,7 +138,7 @@ impl From<cita_cloud_proto::blockchain::CompactBlock> for EthBlock {
     fn from(origin: cita_cloud_proto::blockchain::CompactBlock) -> Self {
         Self {
             header: origin.header.unwrap().into(),
-            size: 0,
+            size: Default::default(),
             transactions: origin
                 .body
                 .unwrap()

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::rpc_types::ethereum_types::transaction::AccessList;
 use crate::rpc_types::{Data, Data20, Integer, Quantity};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq, Eq, Default)]
@@ -33,6 +34,12 @@ pub struct EthCallRequest {
     pub gas_price: Option<Quantity>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_fee_per_gas: Option<Quantity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_priority_fee_per_gas: Option<Quantity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access_list: Option<AccessList>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq, Eq, Default)]
@@ -49,9 +56,28 @@ pub struct EthTransactionRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<Quantity>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gas: Option<Integer>,
+    pub gas: Option<Quantity>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gas_price: Option<Integer>,
+    pub gas_price: Option<Quantity>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
     pub type_: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_fee_per_gas: Option<Quantity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_priority_fee_per_gas: Option<Quantity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub access_list: Option<AccessList>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub condition: Option<TransactionCondition>,
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum TransactionCondition {
+    /// Valid at this minimum block number.
+    #[serde(rename = "block")]
+    Block(u64),
+    /// Valid at given unix time.
+    #[serde(rename = "time")]
+    Timestamp(u64),
 }
