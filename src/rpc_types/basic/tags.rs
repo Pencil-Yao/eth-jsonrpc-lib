@@ -22,6 +22,10 @@ pub enum BlockTag {
     Earliest,
     #[serde(rename = "pending")]
     Pending,
+    #[serde(rename = "safe")]
+    Safe,
+    #[serde(rename = "finalized")]
+    Finalized,
 }
 
 enum_number!(
@@ -37,6 +41,8 @@ impl Display for BlockTag {
             BlockTag::Latest => write!(f, "latest"),
             BlockTag::Earliest => write!(f, "earliest"),
             BlockTag::Pending => write!(f, "pending"),
+            BlockTag::Safe => write!(f, "latest"),
+            BlockTag::Finalized => write!(f, "latest"),
         }
     }
 }

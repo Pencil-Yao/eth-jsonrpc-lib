@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::rpc_types::{BlockTag, Quantity};
+use crate::rpc_types::{BlockTag, Data32, Quantity};
+use cita_tool::H256;
 use std::fmt::Display;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Hash, PartialEq, Eq)]
@@ -20,6 +21,8 @@ use std::fmt::Display;
 pub enum BlockNumber {
     /// Block Tag
     Tag(BlockTag),
+    /// Block Hash
+    Hash(Data32),
     /// Height
     Height(Quantity),
 }
@@ -53,6 +56,10 @@ impl Display for BlockNumber {
         match self {
             BlockNumber::Tag(tag) => write!(f, "{tag}"),
             BlockNumber::Height(height) => write!(f, "{height}"),
+            BlockNumber::Hash(hash) => {
+                let hash: H256 = hash.clone().into();
+                write!(f, "{hash:?}")
+            }
         }
     }
 }

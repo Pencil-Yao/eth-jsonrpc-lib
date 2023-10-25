@@ -14,6 +14,7 @@
 
 use crate::rpc_types::{ethereum_types::EthBlockTransaction, Block, BlockHeader, Data};
 use ethereum_types::{Address, Bloom, H256, H64, U256};
+use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -42,7 +43,10 @@ impl From<BlockHeader> for EthBlockHeader {
     fn from(origin: BlockHeader) -> Self {
         Self {
             parent_hash: origin.prev_hash,
-            sha3_uncles: Default::default(),
+            sha3_uncles: H256::from_str(
+                "1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+            )
+            .unwrap(),
             miner: origin.proposer,
             state_root: origin.state_root,
             transactions_root: origin.transactions_root,
@@ -70,7 +74,10 @@ impl From<cita_cloud_proto::blockchain::BlockHeader> for EthBlockHeader {
         }
         Self {
             parent_hash: H256::from_slice(origin.prevhash.as_slice()),
-            sha3_uncles: Default::default(),
+            sha3_uncles: H256::from_str(
+                "1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+            )
+            .unwrap(),
             miner: Address::from_slice(origin.proposer.as_slice()),
             state_root: Default::default(),
             transactions_root: H256::from_slice(origin.transactions_root.as_slice()),
