@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use crate::rpc_types::{BlockTag, Data32, Quantity};
+use cita_cloud_proto::evm::{self, block_number::Lable};
 use cita_tool::H256;
 use std::fmt::Display;
 
@@ -59,6 +60,33 @@ impl Display for BlockNumber {
             BlockNumber::Hash(hash) => {
                 let hash: H256 = hash.clone().into();
                 write!(f, "{hash:?}")
+            }
+        }
+    }
+}
+
+impl Into<evm::BlockNumber> for BlockNumber {
+    fn into(self) -> evm::BlockNumber {
+        match self {
+            BlockNumber::Tag(tag) => match tag {
+                BlockTag::Latest | BlockTag::Safe | BlockTag::Finalized => evm::BlockNumber {
+                    lable: Some(Lable::Tag("latest".to_string())),
+                },
+                BlockTag::Earliest => evm::BlockNumber {
+                    lable: Some(Lable::Tag("earlist".to_string())),
+                },
+                BlockTag::Pending => evm::BlockNumber {
+                    lable: Some(Lable::Tag("pending".to_string())),
+                },
+            },
+            BlockNumber::Height(height) => evm::BlockNumber {
+                lable: Some(Lable::Height(height.0.low_u64())),
+            },
+            BlockNumber::Hash(hash) => {
+                let hash: H256 = hash.into();
+                evm::BlockNumber {
+                    lable: Some(Lable::Hash(hash.0.to_vec())),
+                }
             }
         }
     }

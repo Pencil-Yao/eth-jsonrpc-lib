@@ -17,7 +17,7 @@ serde_derive = "1.0"
 serde_repr = "0.1"
 rustc-serialize = "0.3"
 ethereum-types = "0.14"
-cita_cloud_proto = '6.7.0'
+cita_cloud_proto = '6.7.2-beta.3'
 protobuf = "=2.8.1"
 rand = "0.8"
 rlp = "0.5"
