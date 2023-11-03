@@ -73,7 +73,7 @@ impl Into<evm::BlockNumber> for BlockNumber {
                     lable: Some(Lable::Tag("latest".to_string())),
                 },
                 BlockTag::Earliest => evm::BlockNumber {
-                    lable: Some(Lable::Tag("earlist".to_string())),
+                    lable: Some(Lable::Tag("earliest".to_string())),
                 },
                 BlockTag::Pending => evm::BlockNumber {
                     lable: Some(Lable::Tag("pending".to_string())),
